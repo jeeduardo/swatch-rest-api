@@ -41,14 +41,19 @@ class SwatchRepository implements SwatchRepositoryInterface
      */
     protected $productAttributeOptionManagement;
 
+    /**
+     * Class construct
+     * @param \Magento\Swatches\Model\SwatchFactory $swatchFactory
+     * @param \Josephson\SwatchRestApi\Api\Data\ApiSwatchInterfaceFactory $apiSwatchFactory
+     * @param \Magento\Catalog\Api\ProductAttributeOptionManagementInterface $productAttributeOptionManagement
+     * @param \Magento\Eav\Model\Config $eavConfig
+     */
     public function __construct(
         \Magento\Swatches\Model\SwatchFactory $swatchFactory,
-        \Josephson\SwatchRestApi\Api\Data\ApiSwatchInterfaceFactory $apiSwatchFactory
-        // , \Magento\Catalog\Api\ProductAttributeOptionManagementInterface $productAttributeOptionManagement
+        \Josephson\SwatchRestApi\Api\Data\ApiSwatchInterfaceFactory $apiSwatchFactory,
+        \Magento\Catalog\Api\ProductAttributeOptionManagementInterface $productAttributeOptionManagement,
+        \Magento\Eav\Model\Config $eavConfig
     ) {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $productAttributeOptionManagement = $objectManager->get('\Magento\Catalog\Api\ProductAttributeOptionManagementInterface');
-        $eavConfig = $objectManager->get('Magento\Eav\Model\Config');
         $this->swatchFactory = $swatchFactory;
         $this->apiSwatchFactory = $apiSwatchFactory;
         $this->productAttributeOptionManagement = $productAttributeOptionManagement;
@@ -60,8 +65,8 @@ class SwatchRepository implements SwatchRepositoryInterface
      */
     public function save($attributeCode, $option)
     {
-        $this->productAttributeOptionManagement->add($attributeCode, $option);
-        if (!empty($option->getStoreLabels()[0])) {
+        $wasOptionSaved = $this->productAttributeOptionManagement->add($attributeCode, $option);
+        if ($wasOptionSaved && !empty($option->getStoreLabels()[0])) {
             
             $firstOptionStoreLabel = $option->getStoreLabels()[0];
             $label = $firstOptionStoreLabel->getLabel();

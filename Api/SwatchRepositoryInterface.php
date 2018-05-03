@@ -26,7 +26,7 @@ interface SwatchRepositoryInterface
 
     /**
      * POST for swatch_repository api
-     * @param string $param
+     * @param string $attributeCode
      * @param \Magento\Eav\Api\Data\AttributeOptionInterface $option
      * @return bool
      */
@@ -40,4 +40,7 @@ interface SwatchRepositoryInterface
      */
     public function getByAttributeAndOption($attributeCode, $optionId);
 
+    /**
+     * There's no delete as the DELETE API endpoint for deleting an option is working
+     */
 }
